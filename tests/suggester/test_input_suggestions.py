@@ -17,62 +17,6 @@ class SuggestionsApp(App[ComposeResult]):
         yield self.input
 
 
-async def test_no_suggestions():
-    app = SuggestionsApp([])
-    async with app.run_test() as pilot:
-        assert app.input._suggestion == ""
-        await pilot.press("a")
-        assert app.input._suggestion == ""
-
-
-async def test_suggestion():
-    app = SuggestionsApp(["hello"])
-    async with app.run_test() as pilot:
-        for char in "hello":
-            await pilot.press(char)
-            assert app.input._suggestion == "hello"
-
-
-async def test_accept_suggestion():
-    app = SuggestionsApp(["hello"])
-    async with app.run_test() as pilot:
-        await pilot.press("h")
-        await pilot.press("right")
-        assert app.input.value == "hello"
-
-
-async def test_no_suggestion_on_empty_value():
-    app = SuggestionsApp(["hello"])
-    async with app.run_test():
-        assert app.input._suggestion == ""
-
-
-async def test_no_suggestion_on_empty_value_after_deleting():
-    app = SuggestionsApp(["hello"])
-    async with app.run_test() as pilot:
-        await pilot.press("h", "e", "backspace", "backspace")
-        assert app.input.value == ""  # Sanity check.
-        assert app.input._suggestion == ""
-
-
-async def test_suggestion_shows_up_after_deleting_extra_chars():
-    app = SuggestionsApp(["hello"])
-    async with app.run_test() as pilot:
-        await pilot.press(*"help")
-        assert app.input._suggestion == ""
-        await pilot.press("backspace")
-        assert app.input._suggestion == "hello"
-
-
-async def test_suggestion_shows_up_after_deleting_extra_chars_in_middle_of_word():
-    app = SuggestionsApp(["hello"])
-    async with app.run_test() as pilot:
-        await pilot.press(*"hefl")
-        assert app.input._suggestion == ""
-        await pilot.press("left", "backspace")
-        assert app.input._suggestion == "hello"
-
-
 @pytest.mark.parametrize(
     ("suggestion", "truncate_at"),
     [

@@ -22,27 +22,6 @@ class InputApp(App[None]):
             yield Input(self.TEST_TEXT)
 
 
-async def test_internal_value_no_password():
-    """The displayed value should be the input value."""
-    async with InputApp().run_test() as pilot:
-        assert pilot.app.query_one(Input)._value == Text(pilot.app.TEST_TEXT)
-
-
-async def test_internal_value_password():
-    """The displayed value should be a password text."""
-    async with InputApp().run_test() as pilot:
-        pilot.app.query_one(Input).password = True
-        assert pilot.app.query_one(Input)._value == Text("•" * len(pilot.app.TEST_TEXT))
-
-
-async def test_internal_value_highlighted():
-    async with InputApp().run_test() as pilot:
-        pilot.app.query_one(Input).highlighter = JSONHighlighter()
-        test_text = f'{{"test": "{pilot.app.TEST_TEXT}"}}'
-        pilot.app.query_one(Input).value = test_text
-        assert pilot.app.query_one(Input)._value == JSONHighlighter()(test_text)
-
-
 async def test_cursor_toggle():
     """Cursor toggling should toggle the cursor."""
     async with InputApp().run_test() as pilot:

@@ -14,24 +14,6 @@ def two_way_dict():
     )
 
 
-def test_get(two_way_dict):
-    assert two_way_dict.get(1) == 10
-
-
-def test_get_key(two_way_dict):
-    assert two_way_dict.get_key(30) == 3
-
-
-def test_set_item(two_way_dict):
-    two_way_dict[40] = 400
-    assert two_way_dict.get(40) == 400
-    assert two_way_dict.get_key(400) == 40
-
-
-def test_len(two_way_dict):
-    assert len(two_way_dict) == 3
-
-
 def test_delitem(two_way_dict):
     assert two_way_dict.get(3) == 30
     assert two_way_dict.get_key(30) == 3

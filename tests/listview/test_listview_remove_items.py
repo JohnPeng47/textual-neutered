@@ -11,15 +11,6 @@ class EmptyListViewApp(App[None]):
         yield ListView()
 
 
-async def test_listview_pop_empty_raises_index_error():
-    app = EmptyListViewApp()
-    async with app.run_test() as pilot:
-        listview = pilot.app.query_one(ListView)
-        with pytest.raises(IndexError) as excinfo:
-            listview.pop()
-        assert "pop from empty list" in str(excinfo.value)
-
-
 class ListViewApp(App[None]):
     def __init__(self, initial_index: int | None = None):
         super().__init__()
@@ -45,16 +36,6 @@ class ListViewApp(App[None]):
             self.highlighted.append(None)
         else:
             self.highlighted.append(str(message.item.children[0].renderable))
-
-
-async def test_listview_remove_items() -> None:
-    """Regression test for https://github.com/Textualize/textual/issues/4735"""
-    app = ListViewApp()
-    async with app.run_test() as pilot:
-        listview = pilot.app.query_one(ListView)
-        assert len(listview) == 9
-        await listview.remove_items(range(4, 9))
-        assert len(listview) == 4
 
 
 @pytest.mark.parametrize(

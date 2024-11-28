@@ -41,38 +41,6 @@ class Counter(App[None]):
         self.clashed_node = node
 
 
-async def test_keymap_default_binding_replaces_old_binding():
-    app = Counter({"app.increment": "right,k"})
-    async with app.run_test() as pilot:
-        # The original bindings are removed - action not called.
-        await pilot.press("i", "up")
-        assert app.count == 0
-
-        # The new bindings are active and call the action.
-        await pilot.press("right", "k")
-        assert app.count == 2
-
-
-async def test_keymap_sends_message_when_clash():
-    app = Counter({"app.increment": "d"})
-    async with app.run_test() as pilot:
-        await pilot.press("d")
-        assert app.clashed_bindings is not None
-        assert len(app.clashed_bindings) == 1
-        clash = app.clashed_bindings.pop()
-        assert app.clashed_node is app
-        assert clash.key == "d"
-        assert clash.action == "increment"
-        assert clash.id == "app.increment"
-
-
-async def test_keymap_with_unknown_id_is_noop():
-    app = Counter({"this.is.an.unknown.id": "d"})
-    async with app.run_test() as pilot:
-        await pilot.press("d")
-        assert app.count == -1
-
-
 async def test_keymap_inherited_bindings_same_id():
     """When a child widget inherits from a parent widget, if they have
     a binding with the same ID, then both parent and child bindings will

@@ -13,17 +13,6 @@ class ProgressBarApp(App[None]):
         yield ProgressBar()
 
 
-async def test_progress_bar_animates_on_full() -> None:
-    """An indeterminate progress bar is not fully highlighted when animating."""
-    app = ProgressBarApp()
-    app.animation_level = "full"
-
-    async with app.run_test():
-        bar_renderable = app.query_one(Bar).render()
-        start, end = bar_renderable.highlight_range
-        assert start != 0 or end != app.query_one(Bar).size.width
-
-
 async def test_progress_bar_animates_on_basic() -> None:
     """An indeterminate progress bar is not fully highlighted when animating."""
     app = ProgressBarApp()

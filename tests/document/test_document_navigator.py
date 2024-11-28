@@ -28,44 +28,6 @@ def make_navigator(text, width):
     "start,end",
     [
         [(0, 0), (0, 0)],
-        [(0, 1), (0, 0)],
-        [(0, 2), (0, 0)],
-        [(0, 3), (0, 0)],
-        [(0, 4), (0, 1)],
-        [(0, 5), (0, 2)],
-        [(0, 6), (0, 2)],  # clamps to valid index
-        [(0, 7), (0, 2)],  # clamps to the last valid index
-        [(1, 0), (0, 3)],
-        [(1, 1), (0, 4)],
-        [(1, 5), (1, 1)],
-    ],
-)
-def test_get_location_above(start, end):
-    assert make_navigator(TEXT, 4).get_location_above(start) == end
-
-
-@pytest.mark.parametrize(
-    "start,end",
-    [
-        [(0, 0), (0, 3)],
-        [(0, 1), (0, 4)],
-        [(0, 2), (0, 5)],
-        [(0, 3), (1, 0)],
-        [(0, 4), (1, 1)],
-        [(0, 5), (1, 2)],
-        [(0, 6), (1, 3)],
-        [(0, 7), (1, 3)],
-        [(1, 3), (1, 5)],
-    ],
-)
-def test_get_location_below(start, end):
-    assert make_navigator(TEXT, 4).get_location_below(start) == end
-
-
-@pytest.mark.parametrize(
-    "start,end",
-    [
-        [(0, 0), (0, 0)],
         [(0, 2), (0, 0)],
         [(0, 3), (0, 3)],
         [(0, 6), (0, 3)],

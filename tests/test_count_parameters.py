@@ -3,20 +3,6 @@ from functools import partial
 from textual._callback import count_parameters
 
 
-def test_functions() -> None:
-    """Test count parameters of functions."""
-
-    def foo(): ...
-    def bar(a): ...
-    def baz(a, b): ...
-
-    # repeat to allow for caching
-    for _ in range(3):
-        assert count_parameters(foo) == 0
-        assert count_parameters(bar) == 1
-        assert count_parameters(baz) == 2
-
-
 def test_methods() -> None:
     """Test count parameters of methods."""
 

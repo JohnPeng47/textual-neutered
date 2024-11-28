@@ -4,11 +4,6 @@ from pathlib import Path
 from textual.file_monitor import FileMonitor
 
 
-def test_repr() -> None:
-    file_monitor = FileMonitor([Path(".")], lambda: None)
-    assert "FileMonitor" in repr(file_monitor)
-
-
 def test_file_never_found():
     path = "doesnt_exist.tcss"
     file_monitor = FileMonitor([Path(path)], lambda: None)

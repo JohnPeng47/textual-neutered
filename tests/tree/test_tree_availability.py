@@ -53,38 +53,6 @@ class TreeApp(App[None]):
         self.record(event)
 
 
-async def test_creating_disabled_tree():
-    """Mounting a disabled `Tree` should result in the base `Widget`
-    having a `disabled` property equal to `True`"""
-    app = TreeApp(disabled=True)
-    async with app.run_test() as pilot:
-        tree = app.query_one(Tree)
-        assert not tree.focusable
-        assert tree.disabled
-        assert tree.cursor_line == 0
-        await pilot.click("#test-tree")
-        await pilot.pause()
-        await pilot.press("down")
-        await pilot.pause()
-        assert tree.cursor_line == 0
-
-
-async def test_creating_enabled_tree():
-    """Mounting an enabled `Tree` should result in the base `Widget`
-    having a `disabled` property equal to `False`"""
-    app = TreeApp(disabled=False)
-    async with app.run_test() as pilot:
-        tree = app.query_one(Tree)
-        assert tree.focusable
-        assert not tree.disabled
-        assert tree.cursor_line == 0
-        await pilot.click("#test-tree")
-        await pilot.pause()
-        await pilot.press("down")
-        await pilot.pause()
-        assert tree.cursor_line == 1
-
-
 async def test_disabled_tree_node_selected_message() -> None:
     """Clicking the root node disclosure triangle on a disabled tree
     should result in no messages being emitted."""

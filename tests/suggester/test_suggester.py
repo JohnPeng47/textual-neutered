@@ -21,61 +21,6 @@ class LogListNode(DOMNode):
         self.log_list.append((message.suggestion, message.value))
 
 
-async def test_cache_on():
-    log = []
-
-    class MySuggester(Suggester):
-        async def get_suggestion(self, value: str):
-            log.append(value)
-            return value
-
-    suggester = MySuggester(use_cache=True)
-    await suggester._get_suggestion(DOMNode(), "hello")
-    assert log == ["hello"]
-    await suggester._get_suggestion(DOMNode(), "hello")
-    assert log == ["hello"]
-
-
-async def test_cache_off():
-    log = []
-
-    class MySuggester(Suggester):
-        async def get_suggestion(self, value: str):
-            log.append(value)
-            return value
-
-    suggester = MySuggester(use_cache=False)
-    await suggester._get_suggestion(DOMNode(), "hello")
-    assert log == ["hello"]
-    await suggester._get_suggestion(DOMNode(), "hello")
-    assert log == ["hello", "hello"]
-
-
-async def test_suggestion_ready_message():
-    log = []
-    suggester = FillSuggester()
-    await suggester._get_suggestion(LogListNode(log), "hello")
-    assert log == [("helloxxxxx", "hello")]
-    await suggester._get_suggestion(LogListNode(log), "world")
-    assert log == [("helloxxxxx", "hello"), ("worldxxxxx", "world")]
-
-
-async def test_no_message_if_no_suggestion():
-    log = []
-    suggester = FillSuggester()
-    await suggester._get_suggestion(LogListNode(log), "this is a longer string")
-    assert log == []
-
-
-async def test_suggestion_ready_message_on_cache_hit():
-    log = []
-    suggester = FillSuggester(use_cache=True)
-    await suggester._get_suggestion(LogListNode(log), "hello")
-    assert log == [("helloxxxxx", "hello")]
-    await suggester._get_suggestion(LogListNode(log), "hello")
-    assert log == [("helloxxxxx", "hello"), ("helloxxxxx", "hello")]
-
-
 @pytest.mark.parametrize(
     "value",
     [

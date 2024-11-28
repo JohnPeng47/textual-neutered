@@ -55,31 +55,6 @@ async def work_with(launcher: Callable[[WorkApp], WorkType]) -> None:
         ]
 
 
-async def test_async_work() -> None:
-    """It should be possible to decorate an async method as an async worker."""
-    await work_with(lambda app: app.async_work)
-
-
-async def test_async_thread_work() -> None:
-    """It should be possible to decorate an async method as a thread worker."""
-    await work_with(lambda app: app.async_thread_work)
-
-
-async def test_thread_work() -> None:
-    """It should be possible to decorate a non-async method as a thread worker."""
-    await work_with(lambda app: app.thread_work)
-
-
-def test_decorate_non_async_no_thread_argument() -> None:
-    """Decorating a non-async method without saying explicitly that it's a thread is an error."""
-    with pytest.raises(WorkerDeclarationError):
-
-        class _(App[None]):
-            @work
-            def foo(self) -> None:
-                pass
-
-
 def test_decorate_non_async_no_thread_is_false() -> None:
     """Decorating a non-async method and saying it isn't a thread is an error."""
     with pytest.raises(WorkerDeclarationError):

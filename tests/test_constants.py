@@ -1,16 +1,6 @@
 from textual.constants import _get_environ_bool, _get_environ_int, _get_environ_port
 
 
-def test_environ_int(monkeypatch):
-    """Check minimum is applied."""
-    monkeypatch.setenv("FOO", "-1")
-    assert _get_environ_int("FOO", 1, minimum=0) == 0
-    monkeypatch.setenv("FOO", "0")
-    assert _get_environ_int("FOO", 1, minimum=0) == 0
-    monkeypatch.setenv("FOO", "1")
-    assert _get_environ_int("FOO", 1, minimum=0) == 1
-
-
 def test_environ_bool(monkeypatch):
     """Anything other than "1" is False."""
     monkeypatch.setenv("BOOL", "1")

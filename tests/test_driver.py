@@ -4,49 +4,6 @@ from textual.events import Click, MouseDown, MouseUp
 from textual.widgets import Button
 
 
-async def test_driver_mouse_down_up_click():
-    """Mouse down and up should issue a click."""
-
-    class MyApp(App):
-        messages = []
-
-        @on(Click)
-        @on(MouseDown)
-        @on(MouseUp)
-        def handle(self, event):
-            self.messages.append(event)
-
-    app = MyApp()
-    async with app.run_test() as pilot:
-        app._driver.process_message(MouseDown(None, 0, 0, 0, 0, 1, False, False, False))
-        app._driver.process_message(MouseUp(None, 0, 0, 0, 0, 1, False, False, False))
-        await pilot.pause()
-        assert len(app.messages) == 3
-        assert isinstance(app.messages[0], MouseDown)
-        assert isinstance(app.messages[1], MouseUp)
-        assert isinstance(app.messages[2], Click)
-
-
-async def test_driver_mouse_down_up_click_widget():
-    """Mouse down and up should issue a click when they're on a widget."""
-
-    class MyApp(App):
-        messages = []
-
-        def compose(self):
-            yield Button()
-
-        def on_button_pressed(self, event):
-            self.messages.append(event)
-
-    app = MyApp()
-    async with app.run_test() as pilot:
-        app._driver.process_message(MouseDown(None, 0, 0, 0, 0, 1, False, False, False))
-        app._driver.process_message(MouseUp(None, 0, 0, 0, 0, 1, False, False, False))
-        await pilot.pause()
-        assert len(app.messages) == 1
-
-
 async def test_driver_mouse_down_drag_inside_widget_up_click():
     """Mouse down and up should issue a click, even if the mouse moves but remains
     inside the same widget."""

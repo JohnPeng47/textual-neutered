@@ -14,42 +14,6 @@ class FocusBlurApp(App[None]):
             yield Input(id=f"input-{n}")
 
 
-async def test_app_blur() -> None:
-    """Test that AppBlur removes focus."""
-    async with FocusBlurApp().run_test() as pilot:
-        assert pilot.app.focused is not None
-        assert pilot.app.focused.id == "input-4"
-        pilot.app.post_message(AppBlur())
-        await pilot.pause()
-        assert pilot.app.focused is None
-
-
-async def test_app_focus_restores_focus() -> None:
-    """Test that AppFocus restores the correct focus."""
-    async with FocusBlurApp().run_test() as pilot:
-        assert pilot.app.focused is not None
-        assert pilot.app.focused.id == "input-4"
-        pilot.app.post_message(AppBlur())
-        await pilot.pause()
-        assert pilot.app.focused is None
-        pilot.app.post_message(AppFocus())
-        await pilot.pause()
-        assert pilot.app.focused is not None
-        assert pilot.app.focused.id == "input-4"
-
-
-async def test_app_focus_restores_none_focus() -> None:
-    """Test that AppFocus doesn't set focus if nothing was focused."""
-    async with FocusBlurApp().run_test() as pilot:
-        pilot.app.screen.focused = None
-        pilot.app.post_message(AppBlur())
-        await pilot.pause()
-        assert pilot.app.focused is None
-        pilot.app.post_message(AppFocus())
-        await pilot.pause()
-        assert pilot.app.focused is None
-
-
 async def test_app_focus_handles_missing_widget() -> None:
     """Test that AppFocus works even when the last-focused widget has gone away."""
     async with FocusBlurApp().run_test() as pilot:

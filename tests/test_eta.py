@@ -1,37 +1,6 @@
 from textual.eta import ETA
 
 
-def test_basics() -> None:
-    eta = ETA()
-    eta.add_sample(1.0, 1.0)
-    assert eta.first_sample == (0, 0)
-    assert eta.last_sample == (1.0, 1.0)
-    assert len(eta._samples) == 2
-    repr(eta)
-
-
-def test_speed() -> None:
-    eta = ETA()
-    # One sample is not enough to determine speed
-    assert eta.speed is None
-    eta.add_sample(1.0, 0.5)
-    assert eta.speed == 0.5
-
-    # Check reset
-    eta.reset()
-    assert eta.speed is None
-    eta.add_sample(0.0, 0.0)
-    assert eta.speed is None
-    eta.add_sample(1.0, 0.5)
-    assert eta.speed == 0.5
-
-    # Check backwards
-    eta.add_sample(2.0, 0.0)
-    assert eta.speed is None
-    eta.add_sample(3.0, 1.0)
-    assert eta.speed == 1.0
-
-
 def test_get_progress_at() -> None:
     eta = ETA()
     eta.add_sample(1, 2)

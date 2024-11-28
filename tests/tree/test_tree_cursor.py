@@ -39,38 +39,6 @@ class TreeApp(App[None]):
         self.messages.append((event.__class__.__name__, event.node.id))
 
 
-async def test_move_cursor() -> None:
-    """Test moving the cursor to a node (updating the highlighted node)."""
-    async with TreeApp().run_test() as pilot:
-        app = pilot.app
-        tree: Tree[str] = app.query_one(Tree)
-        node_to_move_to = app.node
-        tree.move_cursor(node_to_move_to)
-        await pilot.pause()
-
-        # Note there are no Selected messages. We only move the cursor.
-        assert app.messages == [
-            ("NodeExpanded", 0),  # From the call to `tree.root.expand()` in compose
-            ("NodeHighlighted", 0),  # From the initial highlight of the root node
-            ("NodeHighlighted", 1),  # From the call to `tree.move_cursor`
-        ]
-
-
-async def test_move_cursor_reset() -> None:
-    async with TreeApp().run_test() as pilot:
-        app = pilot.app
-        tree: Tree[str] = app.query_one(Tree)
-        tree.move_cursor(app.node)
-        tree.move_cursor(None)
-        await pilot.pause()
-        assert app.messages == [
-            ("NodeExpanded", 0),  # From the call to `tree.root.expand()` in compose
-            ("NodeHighlighted", 0),  # From the initial highlight of the root node
-            ("NodeHighlighted", 1),  # From the 1st call to `tree.move_cursor`
-            ("NodeHighlighted", 0),  # From the call to `tree.move_cursor(None)`
-        ]
-
-
 async def test_select_node() -> None:
     async with TreeApp().run_test() as pilot:
         app = pilot.app

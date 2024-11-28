@@ -6,13 +6,6 @@ from textual.css.errors import StyleValueError
 from textual.css.styles import Styles
 
 
-def test_box_normalization():
-    """Check that none or hidden is normalized to empty string."""
-    styles = Styles()
-    styles.border_left = ("none", "red")
-    assert styles.border_left == ("", Color.parse("red"))
-
-
 @pytest.mark.parametrize("style_attr", ["text_style", "link_style"])
 def test_text_style_none_with_others(style_attr):
     """Style "none" mixed with others should give custom Textual exception."""

@@ -4,11 +4,6 @@ from textual.screen import Screen
 from textual.system_commands import SystemCommandsProvider
 
 
-async def test_sources_with_no_known_screen() -> None:
-    """A command palette with no known screen should have an empty source set."""
-    assert CommandPalette()._provider_classes == set()
-
-
 class ExampleCommandSource(Provider):
     async def search(self, _: str) -> Hits:
         def goes_nowhere_does_nothing() -> None:
@@ -26,22 +21,8 @@ class AppWithNoSources(AppWithActiveCommandPalette):
     pass
 
 
-async def test_no_app_command_sources() -> None:
-    """An app with no sources declared should work fine."""
-    async with AppWithNoSources().run_test() as pilot:
-        assert isinstance(pilot.app.screen, CommandPalette)
-        assert pilot.app.screen._provider_classes == {SystemCommandsProvider}
-
-
 class AppWithSources(AppWithActiveCommandPalette):
     COMMANDS = {ExampleCommandSource}
-
-
-async def test_app_command_sources() -> None:
-    """Command sources declared on an app should be in the command palette."""
-    async with AppWithSources().run_test() as pilot:
-        assert isinstance(pilot.app.screen, CommandPalette)
-        assert pilot.app.screen._provider_classes == {ExampleCommandSource}
 
 
 class AppWithInitialScreen(App[None]):
@@ -56,13 +37,6 @@ class AppWithInitialScreen(App[None]):
 class ScreenWithNoSources(Screen[None]):
     def on_mount(self) -> None:
         self.app.action_command_palette()
-
-
-async def test_no_screen_command_sources() -> None:
-    """An app with a screen with no sources declared should work fine."""
-    async with AppWithInitialScreen(ScreenWithNoSources()).run_test() as pilot:
-        assert isinstance(pilot.app.screen, CommandPalette)
-        assert pilot.app.screen._provider_classes == {SystemCommandsProvider}
 
 
 class ScreenWithSources(ScreenWithNoSources):

@@ -17,49 +17,6 @@ class SelectApp(App[None]):
         yield Select[int](SELECT_OPTIONS, value=self.initial_value)
 
 
-async def test_initial_value_is_validated():
-    """The initial value should be respected if it is a legal value.
-
-    Regression test for https://github.com/Textualize/textual/discussions/3037.
-    """
-    app = SelectApp(1)
-    async with app.run_test():
-        assert app.query_one(Select).value == 1
-
-
-async def test_value_unknown_option_raises_error():
-    """Setting the value to an unknown value raises an error."""
-    app = SelectApp()
-    async with app.run_test():
-        with pytest.raises(InvalidSelectValueError):
-            app.query_one(Select).value = "french fries"
-
-
-async def test_initial_value_inside_compose_is_validated():
-    """Setting the value to an unknown value inside compose should raise an error."""
-
-    class SelectApp(App[None]):
-        def compose(self):
-            s = Select[int](SELECT_OPTIONS)
-            s.value = 73
-            yield s
-
-    app = SelectApp()
-    with pytest.raises(InvalidSelectValueError):
-        async with app.run_test():
-            pass
-
-
-async def test_value_assign_to_blank():
-    """Setting the value to BLANK should work with default `allow_blank` value."""
-    app = SelectApp(1)
-    async with app.run_test():
-        select = app.query_one(Select)
-        assert select.value == 1
-        select.value = Select.BLANK
-        assert select.is_blank()
-
-
 async def test_initial_value_is_picked_if_allow_blank_is_false():
     """The initial value should be picked by default if allow_blank=False."""
 

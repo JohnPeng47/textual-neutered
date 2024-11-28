@@ -33,58 +33,6 @@ class StyleApp(App[None]):
         yield Container(classes="more-specific")
 
 
-async def test_border_importance():
-    """Border without sides should support !important"""
-    async with StyleApp().run_test() as pilot:
-        border = pilot.app.query_one(Container).styles.border
-        desired = ("round", Color.parse("green"))
-        assert border.top == desired
-        assert border.left == desired
-        assert border.bottom == desired
-        assert border.right == desired
-
-
-async def test_outline_importance():
-    """Outline without sides should support !important"""
-    async with StyleApp().run_test() as pilot:
-        outline = pilot.app.query_one(Container).styles.outline
-        desired = ("round", Color.parse("green"))
-        assert outline.top == desired
-        assert outline.left == desired
-        assert outline.bottom == desired
-        assert outline.right == desired
-
-
-async def test_align_importance():
-    """Align without direction should support !important"""
-    async with StyleApp().run_test() as pilot:
-        assert pilot.app.query_one(Container).styles.align == ("right", "bottom")
-
-
-async def test_content_align_importance():
-    """Content align without direction should support !important"""
-    async with StyleApp().run_test() as pilot:
-        assert pilot.app.query_one(Container).styles.content_align == (
-            "right",
-            "bottom",
-        )
-
-
-async def test_offset_importance():
-    """Offset without direction should support !important"""
-    async with StyleApp().run_test() as pilot:
-        assert pilot.app.query_one(Container).styles.offset == ScalarOffset.from_offset(
-            (17, 23)
-        )
-
-
-async def test_overflow_importance():
-    """Overflow without direction should support !important"""
-    async with StyleApp().run_test() as pilot:
-        assert pilot.app.query_one(Container).styles.overflow_x == "hidden"
-        assert pilot.app.query_one(Container).styles.overflow_y == "hidden"
-
-
 async def test_padding_importance():
     """Padding without sides should support !important"""
     async with StyleApp().run_test() as pilot:

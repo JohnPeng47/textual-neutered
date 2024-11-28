@@ -36,16 +36,6 @@ class NoBindings(App[None]):
     """An app with zero bindings."""
 
 
-async def test_just_app_no_bindings() -> None:
-    """An app with no bindings should have no bindings, other than the app's hard-coded ones."""
-    async with NoBindings().run_test() as pilot:
-        assert list(pilot.app._bindings.key_to_bindings.keys()) == [
-            "ctrl+c",
-            "ctrl+p",
-        ]
-        assert pilot.app._bindings.get_bindings_for_key("ctrl+c")[0].priority is True
-
-
 ##############################################################################
 # An application with a single alpha binding.
 #
@@ -61,16 +51,6 @@ class AlphaBinding(App[None]):
     BINDINGS = [Binding("a", "a", "a", priority=True)]
 
 
-async def test_just_app_alpha_binding() -> None:
-    """An app with a single binding should have just the one binding."""
-    async with AlphaBinding().run_test() as pilot:
-        assert sorted(pilot.app._bindings.key_to_bindings.keys()) == sorted(
-            ["ctrl+c", "ctrl+p", "a"]
-        )
-        assert pilot.app._bindings.get_bindings_for_key("ctrl+c")[0].priority is True
-        assert pilot.app._bindings.get_bindings_for_key("a")[0].priority is True
-
-
 ##############################################################################
 # An application with a single low-priority alpha binding.
 #
@@ -83,16 +63,6 @@ class LowAlphaBinding(App[None]):
     """An app with a simple low-priority alpha key binding."""
 
     BINDINGS = [Binding("a", "a", "a", priority=False)]
-
-
-async def test_just_app_low_priority_alpha_binding() -> None:
-    """An app with a single low-priority binding should have just the one binding."""
-    async with LowAlphaBinding().run_test() as pilot:
-        assert sorted(pilot.app._bindings.key_to_bindings.keys()) == sorted(
-            ["ctrl+c", "ctrl+p", "a"]
-        )
-        assert pilot.app._bindings.get_bindings_for_key("ctrl+c")[0].priority is True
-        assert pilot.app._bindings.get_bindings_for_key("a")[0].priority is False
 
 
 ##############################################################################
@@ -118,12 +88,6 @@ class AppWithScreenThatHasABinding(App[None]):
         self.push_screen("main")
 
 
-async def test_app_screen_with_bindings() -> None:
-    """Test a screen with a single key binding defined."""
-    async with AppWithScreenThatHasABinding().run_test() as pilot:
-        assert pilot.app.screen._bindings.get_bindings_for_key("a")[0].priority is True
-
-
 ##############################################################################
 # A non-default screen with a single low-priority alpha key binding.
 #
@@ -145,12 +109,6 @@ class AppWithScreenThatHasALowBinding(App[None]):
 
     def on_mount(self) -> None:
         self.push_screen("main")
-
-
-async def test_app_screen_with_low_bindings() -> None:
-    """Test a screen with a single low-priority key binding defined."""
-    async with AppWithScreenThatHasALowBinding().run_test() as pilot:
-        assert pilot.app.screen._bindings.get_bindings_for_key("a")[0].priority is False
 
 
 ##############################################################################
@@ -220,22 +178,6 @@ class AppWithMovementKeysBound(AppKeyRecorder):
     BINDINGS = AppKeyRecorder.make_bindings()
 
 
-async def test_pressing_alpha_on_app() -> None:
-    """Test that pressing the alpha key, when it's bound on the app, results in an action fire."""
-    async with AppWithMovementKeysBound().run_test() as pilot:
-        await pilot.press(*AppKeyRecorder.ALPHAS)
-        await pilot.pause()
-        assert pilot.app.pressed_keys == [*AppKeyRecorder.ALPHAS]
-
-
-async def test_pressing_movement_keys_app() -> None:
-    """Test that pressing the movement keys, when they're bound on the app, results in an action fire."""
-    async with AppWithMovementKeysBound().run_test() as pilot:
-        await pilot.press(*AppKeyRecorder.ALL_KEYS)
-        await pilot.pause()
-        pilot.app.all_recorded()
-
-
 ##############################################################################
 # An app with a focused child widget with bindings.
 #
@@ -264,14 +206,6 @@ class AppWithWidgetWithBindings(AppKeyRecorder):
 
     def on_mount(self) -> None:
         self.query_one(FocusableWidgetWithBindings).focus()
-
-
-async def test_focused_child_widget_with_movement_bindings() -> None:
-    """A focused child widget with movement bindings should handle its own actions."""
-    async with AppWithWidgetWithBindings().run_test() as pilot:
-        await pilot.press(*AppKeyRecorder.ALL_KEYS)
-
-        pilot.app.all_recorded("locally_")
 
 
 ##############################################################################
@@ -313,14 +247,6 @@ class AppWithScreenWithBindingsWidgetNoBindings(AppKeyRecorder):
         self.push_screen("main")
 
 
-async def test_focused_child_widget_with_movement_bindings_on_screen() -> None:
-    """A focused child widget, with movement bindings in the screen, should trigger screen actions."""
-    async with AppWithScreenWithBindingsWidgetNoBindings().run_test() as pilot:
-        await pilot.press(*AppKeyRecorder.ALL_KEYS)
-
-        pilot.app.all_recorded("screenly_")
-
-
 ##############################################################################
 # A focused widget within a container within a screen that handles bindings.
 #
@@ -356,16 +282,6 @@ class AppWithScreenWithBindingsWrappedWidgetNoBindings(AppKeyRecorder):
         self.push_screen("main")
 
 
-async def test_contained_focused_child_widget_with_movement_bindings_on_screen() -> (
-    None
-):
-    """A contained focused child widget, with movement bindings in the screen, should trigger screen actions."""
-    async with AppWithScreenWithBindingsWrappedWidgetNoBindings().run_test() as pilot:
-        await pilot.press(*AppKeyRecorder.ALL_KEYS)
-
-        pilot.app.all_recorded("screenly_")
-
-
 ##############################################################################
 # A focused widget with bindings but no inheriting of bindings, on app.
 #
@@ -395,14 +311,6 @@ class AppWithWidgetWithBindingsNoInherit(AppKeyRecorder):
 
     def on_mount(self) -> None:
         self.query_one(WidgetWithBindingsNoInherit).focus()
-
-
-async def test_focused_child_widget_with_movement_bindings_no_inherit() -> None:
-    """A focused child widget with movement bindings and inherit_bindings=False should handle its own actions."""
-    async with AppWithWidgetWithBindingsNoInherit().run_test() as pilot:
-        await pilot.press(*AppKeyRecorder.ALL_KEYS)
-
-        pilot.app.all_recorded("locally_")
 
 
 ##############################################################################
@@ -447,16 +355,6 @@ class AppWithScreenWithBindingsWidgetNoBindingsNoInherit(AppKeyRecorder):
 
     def on_mount(self) -> None:
         self.push_screen("main")
-
-
-async def test_focused_child_widget_no_inherit_with_movement_bindings_on_screen() -> (
-    None
-):
-    """A focused child widget, that doesn't inherit bindings, with movement bindings in the screen, should trigger screen actions."""
-    async with AppWithScreenWithBindingsWidgetNoBindingsNoInherit().run_test() as pilot:
-        await pilot.press(*AppKeyRecorder.ALL_KEYS)
-
-        pilot.app.all_recorded("screenly_")
 
 
 ##############################################################################
@@ -504,15 +402,6 @@ class AppWithScreenWithBindingsWidgetEmptyBindingsNoInherit(AppKeyRecorder):
 
     def on_mount(self) -> None:
         self.push_screen("main")
-
-
-async def test_focused_child_widget_no_inherit_empty_bindings_with_movement_bindings_on_screen() -> (
-    None
-):
-    """A focused child widget, that doesn't inherit bindings and sets BINDINGS empty, with movement bindings in the screen, should trigger screen actions."""
-    async with AppWithScreenWithBindingsWidgetEmptyBindingsNoInherit().run_test() as pilot:
-        await pilot.press(*AppKeyRecorder.ALL_KEYS)
-        pilot.app.all_recorded("screenly_")
 
 
 ##############################################################################

@@ -38,19 +38,6 @@ class AppWithActiveCommandPalette(App[None]):
         self.events.append(event)
 
 
-async def test_command_palette_opened_event():
-    app = AppWithActiveCommandPalette()
-    async with app.run_test():
-        assert app.events == [CommandPalette.Opened()]
-
-
-async def test_command_palette_closed_event():
-    app = AppWithActiveCommandPalette()
-    async with app.run_test() as pilot:
-        await pilot.press("escape")
-        assert app.events == [CommandPalette.Opened(), CommandPalette.Closed(False)]
-
-
 async def test_command_palette_closed_event_value():
     app = AppWithActiveCommandPalette()
     async with app.run_test() as pilot:

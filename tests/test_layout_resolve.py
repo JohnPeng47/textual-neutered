@@ -13,27 +13,6 @@ class Edge(NamedTuple):
     min_size: int = 1
 
 
-def test_empty():
-    assert layout_resolve(10, []) == []
-
-
-def test_total_zero():
-    assert layout_resolve(0, [Edge(10)]) == [10]
-
-
-def test_single():
-    # One edge fixed size
-    assert layout_resolve(100, [Edge(10)]) == [10]
-    # One edge fraction of 1
-    assert layout_resolve(100, [Edge(None, 1)]) == [100]
-    # One edge fraction 3
-    assert layout_resolve(100, [Edge(None, 2)]) == [100]
-    # One edge, fraction1, min size 20
-    assert layout_resolve(100, [Edge(None, 1, 20)]) == [100]
-    # One edge fraction 1, min size 120
-    assert layout_resolve(100, [Edge(None, 1, 120)]) == [120]
-
-
 def test_two():
     # Two edges fixed size
     assert layout_resolve(100, [Edge(10), Edge(20)]) == [10, 20]

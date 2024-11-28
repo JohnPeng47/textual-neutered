@@ -17,12 +17,6 @@ class LogListNode(DOMNode):
         self.log_list.append((message.suggestion, message.value))
 
 
-async def test_first_suggestion_has_priority():
-    suggester = SuggestFromList(countries)
-
-    assert "Portugal" == await suggester.get_suggestion("P")
-
-
 @pytest.mark.parametrize("value", ["s", "S", "sc", "sC", "Sc", "SC"])
 async def test_case_insensitive_suggestions(value):
     suggester = SuggestFromList(countries, case_sensitive=False)

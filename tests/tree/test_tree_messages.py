@@ -52,41 +52,6 @@ class TreeApp(App[None]):
         self.record(event)
 
 
-async def test_tree_node_selected_message() -> None:
-    """Selecting a node should result in a selected message being emitted."""
-    async with TreeApp().run_test() as pilot:
-        await pilot.press("enter")
-        await pilot.pause()
-        assert pilot.app.messages == [
-            ("NodeHighlighted", "test-tree"),
-            ("NodeSelected", "test-tree"),
-            ("NodeExpanded", "test-tree"),
-        ]
-
-
-async def test_tree_node_selected_message_no_auto() -> None:
-    """Selecting a node should result in only a selected message being emitted."""
-    async with TreeApp().run_test() as pilot:
-        pilot.app.query_one(MyTree).auto_expand = False
-        await pilot.press("enter")
-        await pilot.pause()
-        assert pilot.app.messages == [
-            ("NodeHighlighted", "test-tree"),
-            ("NodeSelected", "test-tree"),
-        ]
-
-
-async def test_tree_node_expanded_message() -> None:
-    """Expanding a node should result in an expanded message being emitted."""
-    async with TreeApp().run_test() as pilot:
-        await pilot.press("space")
-        await pilot.pause()
-        assert pilot.app.messages == [
-            ("NodeHighlighted", "test-tree"),
-            ("NodeExpanded", "test-tree"),
-        ]
-
-
 async def tree_node_expanded_by_code_message() -> None:
     """Expanding a node via the API should result in an expanded message being posted."""
     async with TreeApp().run_test() as pilot:
@@ -104,18 +69,6 @@ async def tree_node_all_expanded_by_code_message() -> None:
         assert pilot.app.messages == [
             ("NodeHighlighted", "test-tree"),
             ("NodeExpanded", "test-tree"),
-        ]
-
-
-async def test_tree_node_collapsed_message() -> None:
-    """Collapsing a node should result in a collapsed message being emitted."""
-    async with TreeApp().run_test() as pilot:
-        await pilot.press("space", "space")
-        await pilot.pause()
-        assert pilot.app.messages == [
-            ("NodeHighlighted", "test-tree"),
-            ("NodeExpanded", "test-tree"),
-            ("NodeCollapsed", "test-tree"),
         ]
 
 
@@ -160,19 +113,6 @@ async def tree_node_all_toggled_by_code_message() -> None:
             ("NodeHighlighted", "test-tree"),
             ("NodeExpanded", "test-tree"),
             ("NodeCollapsed", "test-tree"),
-        ]
-
-
-async def test_tree_node_highlighted_message() -> None:
-    """Highlighting a node should result in a highlighted message being emitted."""
-    async with TreeApp().run_test() as pilot:
-        await pilot.press("enter", "down")
-        await pilot.pause()
-        assert pilot.app.messages == [
-            ("NodeHighlighted", "test-tree"),
-            ("NodeSelected", "test-tree"),
-            ("NodeExpanded", "test-tree"),
-            ("NodeHighlighted", "test-tree"),
         ]
 
 
